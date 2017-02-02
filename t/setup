@@ -1,0 +1,4 @@
+export TESTBINDIR="$PWD/.bin"
+export PATH="$TESTBINDIR:${TESTDIR%/*}:$PATH"
+
+export FAKE_BINDIR="$TESTBINDIR"

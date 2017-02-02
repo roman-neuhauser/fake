@@ -1,0 +1,55 @@
+prefix = @prefix@
+bindir = @bindir@
+mandir = @mandir@
+man1dir = $(mandir)/man1
+
+tests = $(testdir)/*.t
+
+smandir = m
+srcdir = s
+testdir = t
+
+basex = @basex@
+
+cram = cram
+cramflags = -v
+
+rst2html = rst2html
+rst2htmlflags = -v
+
+.PHONY: all
+all: fake fake.1
+
+.PHONY: html
+html: README.html
+
+.PHONY: check
+check: fake
+	env -i BUILDDIR="$$PWD" PATH="$$PATH" $(cram) $(cramflags) $(tests)
+
+.PHONY: clean
+clean:
+	rm -f fake *.1 *.html *.tmp $(testdir)/*.err
+
+.PHONY: install
+install: all | installdirs
+	install -m 0755 fake $(DESTDIR)$(bindir)
+	install -m 0644 fake.1 $(DESTDIR)$(man1dir)
+
+.PHONY: installdirs
+installdirs:
+	mkdir -p $(DESTDIR)$(bindir)
+	mkdir -p $(DESTDIR)$(man1dir)
+
+
+fake: fake.tmp
+	install -m 755 $< $@
+
+fake.tmp: $(srcdir)/fake.in
+	sed -e 's:@basex''@:$(basex):' < $< > $@
+
+fake.1: $(smandir)/fake.1.in
+	cp $< $@
+
+%.html: %.rst
+	$(rst2html) $(rst2htmlflags) $< $@

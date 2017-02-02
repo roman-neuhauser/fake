@@ -1,0 +1,76 @@
+#!/bin/sh
+# vim: sts=2 sw=2 et fdm=marker cms=\ #\ %s
+
+findtool() # {{{
+{
+  local val= varval= var="$1"; shift
+  eval "varval=\"\$$var\""
+  if test -n "$varval"; then
+    val=$(which $varval 2>/dev/null || :)
+  fi
+  while test -z "$val" && test "${1+set}" = set; do
+    test -z "$1" ||
+      val=$(which "$1" 2>/dev/null || :)
+    shift
+  done
+  test -n "$val" || {
+    echo >&2 "not found: $var"
+    exit 1
+  }
+  test -x "$val" || {
+    echo >&2 "not executable: $var ($val)"
+    exit 1
+  }
+  eval "$var=\"\$val\""
+} # }}}
+
+findfile() # {{{
+{
+  local pth=$1
+  test -e "$pth" || {
+    echo >&2 "not found: $pth"
+    exit 1
+  }
+} # }}}
+
+populate() # {{{
+{
+  sed \
+    -e "s@rootdir@$rootdirg" \
+    -e "s@prefix@$prefixg" \
+    -e "s@bindir@$bindirg" \
+    -e "s@datarootdir@$datarootdirg" \
+    -e "s@mandir@$mandirg" \
+    -e "s@basex@$basexg" \
+    $1 \
+  > $2
+} # }}}
+
+rootdir=$(dirname $(realpath $0))
+
+prefix=/usr/local
+bindir='${prefix}/bin'
+datarootdir='${prefix}/share'
+mandir='${datarootdir}/man'
+mandir_set=0
+
+for a in "$@"; do
+  case $a in
+  --bindir=*)       bindir="${a#*=}"      ;;
+  --datarootdir=*)  datarootdir="${a#*=}" ;;
+  --mandir=*)
+    mandir="${a#*=}"
+    mandir_set=1
+  ;;
+  --prefix=*)       prefix="${a#*=}"      ;;
+  --with-basex=*)   basex="${a#*=}"       ;;
+  esac
+done
+
+if test "$prefix" = /usr/local && test $mandir_set = 0; then
+  mandir=$prefix/man
+fi
+
+findtool basex basex
+
+populate $rootdir/GNUmakefile.in GNUmakefile

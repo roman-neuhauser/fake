@@ -1,0 +1,130 @@
+.\" vim: tw=72 fdm=marker cms=.\\"\ %s
+.
+.\" FRONT MATTER {{{
+.Dd Mar 01, 2017
+.Os
+.Dt FAKE 1
+.
+.Sh NAME
+.Nm fake
+.Nd Mocks and Stubs For the Command Line
+.\" FRONT MATTER }}}
+.
+.\" SYNOPSIS {{{
+.Sh SYNOPSIS
+.Nm
+. Fl h
+.Nm
+. Op Fl b
+. Op Fl c
+. Op Fl v
+. Op Fl x Ar N
+. Cm CMD
+. Op Cm ARG Ns ...
+.\" SYNOPSIS }}}
+.
+.\" DESCRIPTION {{{
+.Sh DESCRIPTION
+.Nm
+provides an easy interface to create mocks of any command.
+A fake can either respond to any argument vector or only to specific one(s),
+it can have whatever body you provide, or it can use builtin behaviors:
+be quiet or reflect the received arguments, with an exit code of your
+choice.
+.Pp
+The directory where the fakes are created is communicated to *Fake* using
+the
+.Ev $FAKE_BINDIR
+environment variable;
+it's up to you to make sure this directory is in your
+.Ev $PATH .
+.\" }}}
+.
+.\" OPTIONS {{{
+.Sh OPTIONS
+.Bl -tag -width xx
+.It Fl h
+Display usage information.
+Given twice, display full help.
+.It Fl b
+Body.
+Create a fake from stdin.
+.It Fl c
+Catchall.
+Created fake will receive any uses of
+. Ar CMD
+not covered by other, more specific fakes.
+.It Fl v
+Verbose.
+Reflect received argv on stderr.
+.It Fl x Ar N
+Exit code.
+Fkae should exit with
+. Ar N .
+.El
+.\" }}}
+.
+.\" OPERANDS {{{
+.Sh OPERANDS
+.Bl -tag -width xx
+.It Ar CMD
+Command name to fake.
+.It Ar ARG Ns ...
+Expected arguments.
+.El
+.\" }}}
+.
+.\" ENVIRONMENT {{{
+.Sh ENVIRONMENT
+.Bl -tag -width xx
+.It Ev FAKE_BINDIR
+Directory where
+.Nm
+will create the fakes.
+It is up to the user to make sure this directory
+is in their
+.Ev $PATH .
+.El
+.\" }}}
+.
+.\" FILES {{{
+.\" .Sh FILES
+.\" }}}
+.
+.\" EXIT STATUS {{{
+.Sh EXIT STATUS
+.Ex -std
+.\" }}}
+
+.\" EXAMPLES {{{
+.Sh EXAMPLES
+.Bd -literal -offset xx
+$ export FAKE_BINDIR=$(mktemp -d)
+$ fake -b foo bar <<EOF
+echo HELLO
+EOF
+$ foo bar
+HELLO
+$ foo
+fake: error: argv mismatch
+fake: expected: foo bar
+fake: received: foo
+.Ed
+.\" }}}
+.
+.\" SEE ALSO {{{
+.Sh SEE ALSO
+.Xr sh 1 .
+.\" }}}
+.
+.\" AUTHORS {{{
+.Sh AUTHORS
+.An Roman Neuhauser Aq Mt rneuhauser+fake@sigpipe.cz
+.\" AUTHORS }}}
+.
+.\" BUGS {{{
+.Sh BUGS
+No doubt plentiful.
+Please report them at
+.Aq Lk https://github.com/roman-neuhauser/fake/issues .
+.\" BUGS }}}

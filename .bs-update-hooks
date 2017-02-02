@@ -1,0 +1,11 @@
+# use: bs-update -Cb HEAD 999
+bsu_bs_project=home:roman-neuhauser
+bsu_bs_package=fake
+bsu_dloadurl='https://github.com/roman-neuhauser/$bsu_bs_package/archive/$bsu_tag.tar.gz'
+bsu_specfiles=(p/PKGBUILD p/$bsu_bs_package.spec)
+function bsu_specfile_hook
+{
+  extract $@[3,-1]
+  touch $bsu_bs_package.changes
+  osc vc -m "Update to version $1"
+}

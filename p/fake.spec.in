@@ -1,0 +1,39 @@
+# norootforbuild
+# Maintainer: Roman Neuhauser <neuhauser+fake@sigpipe.cz>
+
+Name:           fake
+Version:        __VERSION__
+Release:        0
+License:        MIT
+Summary:        Mocks and Stubs For the Command Line
+Url:            https://github.com/roman-neuhauser/%{name}
+Group:          Development/Tools/Version Control
+Source:         %{name}-%{version}.tar.gz
+BuildArch:      noarch
+BuildRoot:      %_tmppath/%name-%version-build
+BuildRequires:  basex
+BuildRequires:  cram
+Requires:       basex
+
+%description
+Easy creation of simple mocks for commandline utilities.
+
+%prep
+%setup -q
+
+%build
+%configure
+make
+
+%check
+make check
+
+%install
+make install DESTDIR="%{buildroot}"
+
+%files
+%defattr(-,root,root)
+%{_bindir}/fake
+%{_mandir}/man1/fake.1.gz
+
+%changelog
