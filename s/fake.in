@@ -48,10 +48,14 @@ usage() # {{{
 	  -h      Display short usage help.
 	          Given twice, display full help.
 
-	  -b      Body.  Create fake from stdin.
+	  -b      Body.  Created fake will consist of current stdin.
 	  -c      Catchall.  Created fake will receive
 	          any uses of CMD not covered by other,
 	          more specific fakes.
+	  -e      Error.  Created fake will emit current
+	          stdin to its stderr.
+	  -o      Output.  Created fake will emit current
+	          stdin to its stdout.
 	  -v      Verbose.  Reflect received argv on stderr.
 	  -x N    Exit code.  Fake should exit with N.
 EOF
@@ -63,17 +67,20 @@ EOF
 } # }}}
 
 catchall=0
-has_body=0
+copy_body=nope
+has_output=0
 reflect=0
 exitcode=
 usage=0
 
-while getopts hbcvx: OPTNAME; do
+while getopts hbceovx: OPTNAME; do
 case "$OPTNAME" in
 h) usage=$((usage - 1)) ;;
 
-b) has_body=1 ;;
+b) copy_body=asis ;;
 c) catchall=1 ;;
+e) copy_body=stderr ;;
+o) copy_body=stdout ;;
 v) reflect=1 ;;
 x) exitcode="$OPTARG" ;;
 esac
@@ -105,6 +112,15 @@ impl_has_body() # {{{
 {
   cat > "${1:?}"
 } # }}}
+impl_has_errout() # {{{
+{
+  {
+    printf -- "%s\n" "#!/bin/sh"
+    printf -- "%s\n" "cat >&${1:?} <<\\EOF"
+    cat
+    printf -- "%s\n" "EOF"
+  } > "$name"
+} # }}}
 impl_reflect() # {{{
 {
   sed 's/^ *//' > "${1:?}" <<\EOF
@@ -122,8 +138,12 @@ impl_default() # {{{
   } > "${1:?}"
 } # }}}
 
-if test $has_body -ne 0; then
+if test $copy_body = asis; then
   impl_has_body "$name"
+elif test $copy_body = stderr; then
+  impl_has_errout 2 "$name"
+elif test $copy_body = stdout; then
+  impl_has_errout 1 "$name"
 elif test $reflect -ne 0; then
   impl_reflect "$name"
 else

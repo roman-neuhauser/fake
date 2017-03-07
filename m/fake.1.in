@@ -15,7 +15,7 @@
 .Nm
 . Fl h
 .Nm
-. Op Fl b
+. Op Fl b No | Fl e No | Fl o
 . Op Fl c
 . Op Fl v
 . Op Fl x Ar N
@@ -54,6 +54,12 @@ Catchall.
 Created fake will receive any uses of
 . Ar CMD
 not covered by other, more specific fakes.
+.It Fl e
+Error.
+Created fake will emit current stdin to its stderr.
+.It Fl o
+Output.
+Created fake will emit current stdin to its stdout.
 .It Fl v
 Verbose.
 Reflect received argv on stderr.

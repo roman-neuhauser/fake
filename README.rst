@@ -56,6 +56,10 @@ Usage
     -c      Catchall.  Created fake will receive
             any uses of CMD not covered by other,
             more specific fakes.
+    -e      Error.  Created fake will emit current
+            stdin to its stderr.
+    -o      Output.  Created fake will emit current
+            stdin to its stdout.
     -v      Verbose.  Reflect received argv on stderr.
     -x N    Exit code.  Fake should exit with N.
 
