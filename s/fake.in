@@ -6,6 +6,27 @@ set -u
 
 basex="${basex:-@basex@}"
 
+# need to protect this code from already-created fakes {{{
+# this must be syntax-, not command-based,
+# to prevent stumbling on a pre-existing fake.
+[ "${FAKE_BINDIR-unset}" = unset ] || {
+  opath="$PATH"
+  npath=
+
+  while [ -n "$opath" ]; do
+    seg="${opath%%:*}"
+    case "$opath" in
+    *:*) opath="${opath#*:}" ;;
+    *)   opath= ;;
+    esac
+    [ "$seg" = "$FAKE_BINDIR" ] || {
+      npath="$npath:$seg"
+    }
+  done
+  export PATH="${npath#:}"
+}
+# }}}
+
 basex() # {{{
 {
   command "$basex" "$@"
@@ -111,6 +132,7 @@ chmod +x "$name"
 
 sed '1,/^#### BEGIN FRONTEND$/d' < "$0" |
 sed \
+  -e "s#PATH#$PATH" \
   -e "s#basex#$basex" \
   -e "s#impldir#$impldir" \
 > "$frontend"
@@ -119,6 +141,8 @@ exit
 
 #### BEGIN FRONTEND
 #!/bin/sh
+
+export PATH="#PATH#"
 
 impldir="#impldir#"
 basex="${basex:-#basex#}"
