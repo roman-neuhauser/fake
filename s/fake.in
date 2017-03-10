@@ -100,13 +100,15 @@ impldir="$bindir/.$cmd"
 mkdir -p "$impldir"
 
 if test $catchall -eq 0; then
-  name="$impldir/$#"
-  for arg in "$@"; do
-    name="$name-$(printf -- "%s" "$arg" | basex -e base32hex)"
-  done
+  name="$impldir/$#-"
 else
-  name="$impldir/X"
+  name="$impldir/$#+"
 fi
+hargv=
+for arg in "$@"; do
+  hargv="$hargv-$(printf -- "%s" "$arg" | basex -e base32hex)"
+done
+name="$name${hargv#-}"
 
 impl_has_body() # {{{
 {
@@ -174,6 +176,41 @@ basex() # {{{
   command "$basex" "$@"
 } # }}}
 
+export PATH="#PATH#"
+
+catchalls() # {{{
+{
+  find "${1:?}" \
+    -mindepth 1 \
+    -maxdepth 1 \
+    -name '*+*' \
+  | sort -rn
+} # }}}
+
+findimpl() # {{{
+{
+  local rv=$1 impldir="$2" argc="$3" hargv="$4"
+  eval $rv=
+  local p=
+  for p in $(catchalls "$impldir"); do
+    local f="${p##*/}"
+    local fargc="${f%%+*}"
+    local fargv="${f#*+}"
+    [ $argc -ge $fargc ] || continue
+    if [ "$hargv" = "$fargv" ] || [ -z "$fargv" ]; then
+      eval $rv='"$p"'
+      return
+    fi
+    case "$hargv" in
+    "$fargv"-*)
+      eval $rv='"$p"'
+      return
+    ;;
+    esac
+  done
+  return 1
+} # }}}
+
 expected() # {{{
 {
   local name="${1##*/}"
@@ -181,38 +218,44 @@ expected() # {{{
   if test "$name" = 0; then
     :
   else
-    local argc="${name%%-*}"
-    local name="${name#*-}"
+    local argc="${name%%[-+]*}"
+    local argv="${name#*[-+]}"
     local arg=
     local i=1
     while test $i -le $argc; do
-      arg="${name%%-*}"
-      name="${name#*-}"
+      arg="${argv%%-*}"
+      argv="${argv#*-}"
       set -- "$@" "$(printf -- "%s" "$arg" | basex -d base32hex)"
       i=$((i+1))
     done
   fi
-  printf -- "fake: expected: %s\n" "$ARGV0${*:+ $*}"
+  local fmt=
+  case "${name#$argc}" in
+  -*) fmt="fake: expected: %s\n" ;;
+  +*) fmt="fake: expected: %s [...]\n" ;;
+  esac
+  printf -- "$fmt" "$ARGV0${*:+ $*}"
 } # }}}
 
-name=$#
+hargv=
 for arg in "$@"; do
-  name="$name-$(printf -- "%s" "$arg" | basex -e base32hex)"
+  hargv="$hargv-$(printf -- "%s" "$arg" | basex -e base32hex)"
 done
+hargv="${hargv#-}"
 
 export ARGV0="${0##*/}"
 
-if test -x "$impldir/$name"; then
-  exec "$impldir/$name" "$@"
-elif test -x "$impldir/X"; then
-  exec "$impldir/X" "$@"
+if test -x "$impldir/$#-$hargv"; then
+  exec "$impldir/$#-$hargv" "$@"
+elif findimpl impl "$impldir" "$#" "$hargv"; then
+  exec "$impl" "$@"
 fi
 
 exec >&2
 
 printf -- "fake: error: argv mismatch\n"
-find "$impldir" -mindepth 1 -print | sort | while read name; do
-  expected "$name"
+find "$impldir" -mindepth 1 -print | sort | while read fname; do
+  expected "$fname"
 done
 printf -- "fake: received: %s" "$ARGV0"
 test $# -eq 0 || printf -- " %s" "$@"
