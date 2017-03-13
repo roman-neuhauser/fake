@@ -17,4 +17,5 @@ test::
   $ test -f $FAKE_BINDIR/.fubar/0
   $ test -x $FAKE_BINDIR/.fubar/0
   $ cat $FAKE_BINDIR/.fubar/0
+  #!/bin/sh
   exit 42

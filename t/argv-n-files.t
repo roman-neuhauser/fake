@@ -17,3 +17,4 @@ test::
   $ test -x $FAKE_BINDIR/.fubar/2-5KMMQRRICK======-EDQ7APJ6
 
   $ cat $FAKE_BINDIR/.fubar/2-5KMMQRRICK======-EDQ7APJ6
+  #!/bin/sh

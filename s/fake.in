@@ -117,7 +117,9 @@ EOF
 } # }}}
 impl_default() # {{{
 {
-  touch "${1:?}"
+  {
+    printf -- "%s\n" "#!/bin/sh"
+  } > "${1:?}"
 } # }}}
 
 if test $has_body -ne 0; then
