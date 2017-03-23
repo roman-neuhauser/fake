@@ -195,8 +195,6 @@ bindir=${FAKE_BINDIR:?}
 frontend="$bindir/$cmd"
 impldir="$bindir/.$cmd"
 
-mkdir -p "$impldir"
-
 if test $catchall -eq 0; then
   name="$impldir/$#-"
 else
@@ -242,6 +240,8 @@ impl_default() # {{{
     printf -- "%s\n" "#!/bin/sh"
   } > "${1:?}"
 } # }}}
+
+mkdir -p "$impldir"
 
 if test $copy_body = asis; then
   impl_has_body "$name"
