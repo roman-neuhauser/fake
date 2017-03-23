@@ -241,6 +241,20 @@ expected() # {{{
   printf -- "$fmt" "$ARGV0${*:+ $*}"
 } # }}}
 
+mismatch() # {{{
+{
+  local impldir="$1" fname=
+  shift
+  printf -- "fake: error: argv mismatch\n"
+  find "$impldir" -mindepth 1 -print | sort | while read fname; do
+    expected "$fname"
+  done
+  printf -- "fake: received: %s" "$ARGV0"
+  test $# -eq 0 || printf -- " %s" "$@"
+  printf -- "\n"
+  exit 100
+} >&2 # }}}
+
 hargv=
 for arg in "$@"; do
   hargv="$hargv-$(printf -- "%s" "$arg" | basex -e base32hex)"
@@ -253,13 +267,4 @@ if findimpl impl "$impldir" "$#" "$hargv"; then
   exec "$impl" "$@"
 fi
 
-exec >&2
-
-printf -- "fake: error: argv mismatch\n"
-find "$impldir" -mindepth 1 -print | sort | while read fname; do
-  expected "$fname"
-done
-printf -- "fake: received: %s" "$ARGV0"
-test $# -eq 0 || printf -- " %s" "$@"
-printf -- "\n"
-exit 100
+mismatch "$impldir" "$@"
