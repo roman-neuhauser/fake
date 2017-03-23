@@ -32,7 +32,8 @@ usage() # {{{
   local ex=${1-100}
   test $ex -ne 100 || printf >&2 'fake: error: missing operand\n'
   printf >&2 'fake: usage: %s -h|-hh\n' "${0##*/}"
-  printf >&2 'fake: usage: %s [options] CMD [ARG...]\n' "${0##*/}"
+  printf >&2 'fake: usage: %s [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]\n' "${0##*/}"
+  printf >&2 'fake: usage: %s -w CMD [ARG...]\n' "${0##*/}"
   if test $ex -gt -2; then
     printf >&2 'fake: use `fake -hh` to display help\n'
   else
@@ -52,6 +53,8 @@ usage() # {{{
 	  -o      Output.  Created fake will emit current
 	          stdin to its stdout.
 	  -v      Verbose.  Reflect received argv on stderr.
+	  -w      Which.  Print pathname of the fake that
+	          would receive given CMD [ARG...].
 	  -x N    Exit code.  Fake should exit with N.
 EOF
   fi
@@ -86,6 +89,7 @@ findimpl() # {{{
     return
   fi
   local p=
+  test -d "$impldir" || return 1
   for p in $(catchalls "$impldir"); do
     local f="${p##*/}"
     local fargc="${f%%+*}"
@@ -164,8 +168,9 @@ has_output=0
 reflect=0
 exitcode=
 usage=0
+which=0
 
-while getopts hbceovx: OPTNAME; do
+while getopts hbceovwx: OPTNAME; do
 case "$OPTNAME" in
 h) usage=$((usage - 1)) ;;
 
@@ -174,6 +179,7 @@ c) catchall=1 ;;
 e) copy_body=stderr ;;
 o) copy_body=stdout ;;
 v) reflect=1 ;;
+w) which=1 ;;
 x) exitcode="$OPTARG" ;;
 esac
 done; shift $((OPTIND - 1))
@@ -199,6 +205,13 @@ fi
 hargv=
 hashargs hargv "$@"
 name="$name$hargv"
+
+impl=
+if test $which -eq 1; then
+  findimpl impl "$impldir" "$#" "$hargv" || exit 1
+  printf "%s\n" "$impl"
+  exit 0
+fi
 
 impl_has_body() # {{{
 {
@@ -269,6 +282,7 @@ hashargs hargv "$@"
 
 export ARGV0="${0##*/}"
 
+impl=
 if findimpl impl "$impldir" "$#" "$hargv"; then
   exec "$impl" "$@"
 fi

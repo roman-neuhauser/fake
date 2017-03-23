@@ -19,8 +19,12 @@
 . Op Fl c
 . Op Fl v
 . Op Fl x Ar N
-. Cm CMD
-. Op Cm ARG Ns ...
+. Ar CMD
+. Op Ar ARG Ns ...
+.Nm
+. Fl w
+. Ar CMD
+. Op Ar ARG Ns ...
 .\" SYNOPSIS }}}
 .
 .\" DESCRIPTION {{{
@@ -63,6 +67,12 @@ Created fake will emit current stdin to its stdout.
 .It Fl v
 Verbose.
 Reflect received argv on stderr.
+.It Fl w
+Which.
+Print the pathname of the backend that would receive given
+. Ar CMD Op Ar ARG Ns ... Ns .
+If no backend matches the given command line,
+exits 1 with no other outputs.
 .It Fl x Ar N
 Exit code.
 Fkae should exit with

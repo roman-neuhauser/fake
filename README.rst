@@ -40,12 +40,14 @@ Usage
 
   $ fake -h
   fake: usage: fake -h|-hh
-  fake: usage: fake [options] CMD [ARG...]
+  fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
 
   $ fake -hh
   fake: usage: fake -h|-hh
-  fake: usage: fake [options] CMD [ARG...]
+  fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -w CMD [ARG...]
   
   Options:
   
@@ -61,6 +63,8 @@ Usage
     -o      Output.  Created fake will emit current
             stdin to its stdout.
     -v      Verbose.  Reflect received argv on stderr.
+    -w      Which.  Print pathname of the fake that
+            would receive given CMD [ARG...].
     -x N    Exit code.  Fake should exit with N.
 
 
@@ -160,6 +164,21 @@ You can combine options::
   $ ls whatever
   argc=1 -- whatever
   [69]
+
+
+Display pathname of the receiver for given argv::
+
+  $ rm -r $FAKE_BINDIR/ls $FAKE_BINDIR/.ls
+
+  $ fake -w ls
+  [1]
+
+  $ fake ls foo bar
+  $ fake -c ls
+  $ fake -w ls foo
+  /*/.ls/0+                  (glob)
+  $ fake -w ls foo bar
+  /*/.ls/2-CPNMU===-C9GN4=== (glob)
 
 
 License

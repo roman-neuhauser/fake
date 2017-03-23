@@ -11,25 +11,29 @@ test::
   $ fake
   fake: error: missing operand
   fake: usage: fake -h|-hh
-  fake: usage: fake [options] CMD [ARG...]
+  fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [100]
 
   $ fake -c
   fake: error: missing operand
   fake: usage: fake -h|-hh
-  fake: usage: fake [options] CMD [ARG...]
+  fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [100]
 
   $ fake -h
   fake: usage: fake -h|-hh
-  fake: usage: fake [options] CMD [ARG...]
+  fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
 
   $ fake -hh
   fake: usage: fake -h|-hh
-  fake: usage: fake [options] CMD [ARG...]
+  fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -w CMD [ARG...]
   
   Options:
   
@@ -45,4 +49,6 @@ test::
     -o      Output.  Created fake will emit current
             stdin to its stdout.
     -v      Verbose.  Reflect received argv on stderr.
+    -w      Which.  Print pathname of the fake that
+            would receive given CMD [ARG...].
     -x N    Exit code.  Fake should exit with N.
