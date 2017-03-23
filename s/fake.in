@@ -197,10 +197,8 @@ else
   name="$impldir/$#+"
 fi
 hargv=
-for arg in "$@"; do
-  hargv="$hargv-$(printf -- "%s" "$arg" | basex -e base32hex)"
-done
-name="$name${hargv#-}"
+hashargs hargv "$@"
+name="$name$hargv"
 
 impl_has_body() # {{{
 {
