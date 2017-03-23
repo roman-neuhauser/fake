@@ -255,11 +255,18 @@ mismatch() # {{{
   exit 100
 } >&2 # }}}
 
-hargv=
-for arg in "$@"; do
-  hargv="$hargv-$(printf -- "%s" "$arg" | basex -e base32hex)"
-done
-hargv="${hargv#-}"
+hashargs() # {{{
+{
+  local rv=$1 lhargv= arg=; shift
+  eval $rv=
+  for arg in "$@"; do
+    lhargv="$lhargv-$(printf -- "%s" "$arg" | basex -e base32hex)"
+  done
+  lhargv="${lhargv#-}"
+  eval $rv='"$lhargv"'
+} # }}}
+
+hashargs hargv "$@"
 
 export ARGV0="${0##*/}"
 
