@@ -191,6 +191,10 @@ findimpl() # {{{
 {
   local rv=$1 impldir="$2" argc="$3" hargv="$4"
   eval $rv=
+  if test -x "$impldir/$argc-$hargv"; then
+    eval $rv='"$impldir/$argc-$hargv"'
+    return
+  fi
   local p=
   for p in $(catchalls "$impldir"); do
     local f="${p##*/}"
@@ -245,9 +249,7 @@ hargv="${hargv#-}"
 
 export ARGV0="${0##*/}"
 
-if test -x "$impldir/$#-$hargv"; then
-  exec "$impldir/$#-$hargv" "$@"
-elif findimpl impl "$impldir" "$#" "$hargv"; then
+if findimpl impl "$impldir" "$#" "$hargv"; then
   exec "$impl" "$@"
 fi
 
