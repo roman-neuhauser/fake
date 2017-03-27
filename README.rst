@@ -28,9 +28,18 @@ it can have whatever body you provide, or it can use builtin behaviors:
 be quiet or reflect the received arguments, with an exit code of your
 choice.
 
-The directory where the fakes are created is communicated to *Fake* using
+The directory where the fakes are created is communicated to ``fake`` using
 the ``$FAKE_BINDIR`` environment variable; it's up to you to make sure this
 directory is in your ``$PATH``.
+
+``fake`` and the fakes it creates remove ``$FAKE_BINDIR`` from their ``$PATH``.
+This means adding more fakes won't change the meaning of already existing ones,
+and provides protection against boundless recursion::
+
+  $ echo ls foo | fake -b ls foo
+  $ ls foo
+  ls: foo: No such file or directory
+  [1]
 
 
 Usage
