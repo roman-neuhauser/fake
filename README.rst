@@ -206,3 +206,17 @@ Published under the `MIT license`__, see `LICENSE file`__.
 
 .. __: https://opensource.org/licenses/MIT
 .. __: LICENSE
+
+
+Installation
+============
+
+*Fake* requires POSIX shell and `BaseX`_ to run, plus GNU make
+to build and `Cram`_ to run tests. ::
+
+  % ./configure
+  % make check
+  % sudo make install
+
+.. _BaseX: https://github.com/roman-neuhauser/basex
+.. _Cram: https://bitheap.org/cram/
