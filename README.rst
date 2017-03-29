@@ -32,6 +32,15 @@ The directory where the fakes are created is communicated to ``fake`` using
 the ``$FAKE_BINDIR`` environment variable; it's up to you to make sure this
 directory is in your ``$PATH``.
 
+At creation time, ``fake`` recursively creates directory ``$FAKE_BINDIR/.C/``
+as necessary, executable file ``$FAKE_BINDIR/C`` (the `frontend`), and another
+in ``$FAKE_BINDIR/.C/`` whose name encodes expected number of arguments and
+their values (`backend`).
+
+At run time, the frontend executes the most specific backend for the given
+arguments; if no backend matches, the frontend will emit diagnostic messages
+on stderr.
+
 ``fake`` and the fakes it creates remove ``$FAKE_BINDIR`` from their ``$PATH``.
 This means adding more fakes won't change the meaning of already existing ones,
 and provides protection against boundless recursion::
