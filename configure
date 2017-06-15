@@ -1,16 +1,18 @@
 #!/bin/sh
 # vim: sts=2 sw=2 et fdm=marker cms=\ #\ %s
 
+unalias -a
+
 findtool() # {{{
 {
   local val= varval= var="$1"; shift
   eval "varval=\"\$$var\""
   if test -n "$varval"; then
-    val=$(which $varval 2>/dev/null || :)
+    val=$(command -v $varval 2>/dev/null || :)
   fi
   while test -z "$val" && test "${1+set}" = set; do
     test -z "$1" ||
-      val=$(which "$1" 2>/dev/null || :)
+      val=$(command -v "$1" 2>/dev/null || :)
     shift
   done
   test -n "$val" || {
