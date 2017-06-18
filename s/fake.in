@@ -271,8 +271,6 @@ exit
 
 #### BEGIN FRONTEND
 
-export PATH="#PATH#"
-
 impldir="#impldir#"
 basex="${basex:-#basex#}"
 
