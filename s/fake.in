@@ -33,6 +33,7 @@ usage() # {{{
   test $ex -ne 100 || printf >&2 'fake: error: missing operand\n'
   printf >&2 'fake: usage: %s -h|-hh\n' "${0##*/}"
   printf >&2 'fake: usage: %s [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]\n' "${0##*/}"
+  printf >&2 'fake: usage: %s -p [-c] CMD [ARG...]\n' "${0##*/}"
   printf >&2 'fake: usage: %s -w CMD [ARG...]\n' "${0##*/}"
   if test $ex -gt -2; then
     printf >&2 'fake: use `fake -hh` to display help\n'
@@ -52,6 +53,9 @@ usage() # {{{
 	          stdin to its stderr.
 	  -o      Output.  Created fake will emit current
 	          stdin to its stdout.
+	  -p      Pass-through.  Created fake will re-execute
+	          its argv again after removing $FAKE_BINDIR
+	          from $PATH.
 	  -v      Verbose.  Reflect received argv on stderr.
 	  -w      Which.  Print pathname of the fake that
 	          would receive given CMD [ARG...].
@@ -164,13 +168,14 @@ hashargs() # {{{
 
 catchall=0
 copy_body=nope
+passthrough=0
 has_output=0
 reflect=0
 exitcode=
 usage=0
 which=0
 
-while getopts hbceovwx: OPTNAME; do
+while getopts hbceopvwx: OPTNAME; do
 case "$OPTNAME" in
 h) usage=$((usage - 1)) ;;
 
@@ -178,6 +183,7 @@ b) copy_body=asis ;;
 c) catchall=1 ;;
 e) copy_body=stderr ;;
 o) copy_body=stdout ;;
+p) passthrough=1 ;;
 v) reflect=1 ;;
 w) which=1 ;;
 x) exitcode="$OPTARG" ;;
@@ -215,6 +221,13 @@ impl_has_body() # {{{
 {
   cat > "${1:?}"
 } # }}}
+impl_passthrough() # {{{
+{
+  sed 's/^ *//' > "${1:?}" <<\EOF
+  #!/bin/sh
+  exec "$ARGV0" "$@"
+EOF
+} # }}}
 impl_has_errout() # {{{
 {
   {
@@ -251,6 +264,8 @@ elif test $copy_body = stdout; then
   impl_has_errout 1 "$name"
 elif test $reflect -ne 0; then
   impl_reflect "$name"
+elif test $passthrough -ne 0; then
+  impl_passthrough "$name"
 else
   impl_default "$name"
 fi

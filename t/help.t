@@ -12,6 +12,7 @@ test::
   fake: error: missing operand
   fake: usage: fake -h|-hh
   fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -p [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [100]
@@ -20,6 +21,7 @@ test::
   fake: error: missing operand
   fake: usage: fake -h|-hh
   fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -p [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [100]
@@ -27,12 +29,14 @@ test::
   $ fake -h
   fake: usage: fake -h|-hh
   fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -p [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
 
   $ fake -hh
   fake: usage: fake -h|-hh
   fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake -p [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   
   Options:
@@ -48,6 +52,9 @@ test::
             stdin to its stderr.
     -o      Output.  Created fake will emit current
             stdin to its stdout.
+    -p      Pass-through.  Created fake will re-execute
+            its argv again after removing $FAKE_BINDIR
+            from $PATH.
     -v      Verbose.  Reflect received argv on stderr.
     -w      Which.  Print pathname of the fake that
             would receive given CMD [ARG...].
