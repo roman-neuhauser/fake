@@ -12,8 +12,7 @@ test::
   > ls foo
   > EOF
 
-  $ ls foo 2>/dev/null
-  [1]
+  $ ! ls foo 2>/dev/null
   $ touch foo
   $ ls foo
   foo
@@ -23,8 +22,7 @@ test::
   > ls bar
   > EOF
 
-  $ ls foo 2>/dev/null
-  [1]
+  $ ! ls foo 2>/dev/null
   $ touch bar
   $ ls foo
   bar
