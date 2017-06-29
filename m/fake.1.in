@@ -145,6 +145,7 @@ is in their
 .Sh EXAMPLES
 .Bd -literal -offset xx
 $ export FAKE_BINDIR=$(mktemp -d)
+$ export PATH="$FAKE_BINDIR${PATH:+:$PATH}"
 $ fake -b foo bar <<EOF
 echo HELLO
 EOF
