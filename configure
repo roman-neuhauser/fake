@@ -51,9 +51,9 @@ populate() # {{{
 rootdir=$(dirname $(realpath $0))
 
 prefix=/usr/local
-bindir='${prefix}/bin'
-datarootdir='${prefix}/share'
-mandir='${datarootdir}/man'
+bindir='$(prefix)/bin'
+datarootdir='$(prefix)/share'
+mandir='$(datarootdir)/man'
 mandir_set=0
 
 for a in "$@"; do
