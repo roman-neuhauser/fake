@@ -1,3 +1,4 @@
+datarootdir = @datarootdir@
 prefix = @prefix@
 bindir = @bindir@
 mandir = @mandir@
