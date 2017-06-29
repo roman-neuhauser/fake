@@ -1,5 +1,6 @@
 prefix = @prefix@
 bindir = @bindir@
+datarootdir = @datarootdir@
 mandir = @mandir@
 man1dir = $(mandir)/man1
 
