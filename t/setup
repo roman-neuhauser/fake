@@ -4,3 +4,10 @@ export TESTBINDIR="$PWD/.bin"
 export PATH="$TESTBINDIR:$BUILDDIR:$PATH"
 
 export FAKE_BINDIR="$TESTBINDIR"
+
+fakes()
+(
+  set -eu
+  cd $1
+  find * -type f | sort -n
+)

@@ -28,14 +28,17 @@ it can have whatever body you provide, or it can use builtin behaviors:
 be quiet or reflect the received arguments, with an exit code of your
 choice.
 
-The directory where the fakes are created is communicated to ``fake`` using
-the ``$FAKE_BINDIR`` environment variable; it's up to you to make sure this
-directory is in your ``$PATH``.
+*Fake* creates mocks in ``$FAKE_BINDIR``; it's up to you to make sure this
+directory is in your ``$PATH``.  A mock for command ``C`` consists of
+an executable file ``$FAKE_BINDIR/C`` called the `frontend`, and another one
+under ``$FAKE_BINDIR/.C/`` (the `backend`).  The filepath of each backend
+encodes the argument vector(s) handled by it.  A backend for
+``echo hello world`` will be named ``.echo/2-/D1IMOR3F-ETNN4R34``.
+A backend for any argv starting with ``echo hello world`` will be named
+``.echo/2+/D1IMOR3F-ETNN4R34``.
 
-At creation time, ``fake`` recursively creates directory ``$FAKE_BINDIR/.C/``
-as necessary, executable file ``$FAKE_BINDIR/C`` (the `frontend`), and another
-in ``$FAKE_BINDIR/.C/`` whose name encodes expected number of arguments and
-their values (`backend`).
+To avoid ``ENAMETOOLONG`` errors, ``fake`` splits backend names into segments
+of 255 characters.
 
 At run time, the frontend executes the most specific backend for the given
 arguments; if no backend matches, the frontend will emit diagnostic messages

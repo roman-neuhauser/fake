@@ -41,26 +41,36 @@ it can have whatever body you provide, or it can use builtin behaviors:
 be quiet or reflect the received arguments, with an exit code of your
 choice.
 .Pp
-The directory where the mocks are created is communicated to
 .Nm
-using the
-.Ev $FAKE_BINDIR
-environment variable;
+creates mocks in
+.Ev $FAKE_BINDIR ;
 it's up to you to make sure this directory is in your
 .Ev $PATH .
-.Pp
-At creation time,
-.Nm
-recursively creates directory
-.Ev $FAKE_BINDIR Ns Pa /.C/
-as necessary, executable file
+A mock for command
+.Nm C
+consists of an executable file
 .Ev $FAKE_BINDIR Ns Pa /C
-.Pq the Dq frontend ,
-and another in
-.Ev $FAKE_BINDIR Ns Pa /.C/
-whose name encodes expected number of arguments and their values
-.Pq Dq backend .
-.
+called the
+.Dq frontend ,
+and another one under
+.Ev $FAKE_BINDIR Ns Pa /.C/ No Pa the Dq backend .
+The filepath of each backend encodes the argument vector(s) handled by it.
+A backend for
+.Li echo hello world
+will be named
+.Pa .echo/2-/D1IMOR3F-ETNN4R34 .
+A backend for any argv starting with
+.Li echo hello world
+will be named
+.Pa .echo/2+/D1IMOR3F-ETNN4R34 .
+.Pp
+To avoid
+.Er ENAMETOOLONG
+errors,
+.Nm
+splits backend names into segments
+of 255 characters.
+.Pp
 At run time, the frontend executes the most specific backend for the given
 arguments; if no backend matches, the frontend will emit diagnostic messages
 on stderr.
@@ -122,6 +132,12 @@ Expected arguments.
 .\" ENVIRONMENT {{{
 .Sh ENVIRONMENT
 .Bl -tag -width xx
+.It Ev FAKE_BACKEND_CHUNKSIZE
+Length of each segment backend names are split into.
+Must
+.Em not
+be divisible by 8.
+Defaults to 255.
 .It Ev FAKE_BINDIR
 Directory where
 .Nm

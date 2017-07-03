@@ -12,10 +12,10 @@ test::
 
   $ test -f $FAKE_BINDIR/fubar
   $ test -d $FAKE_BINDIR/.fubar
-  $ ls $FAKE_BINDIR/.fubar
-  2-5KMNCOBID5NNASO=-EHK6IRJ7EC======
-  3-DLNN4P8=-E9GMSP3FDK======-EDQ7APJ6
-  $ test -f $FAKE_BINDIR/.fubar/2-5KMNCOBID5NNASO=-EHK6IRJ7EC======
-  $ test -x $FAKE_BINDIR/.fubar/2-5KMNCOBID5NNASO=-EHK6IRJ7EC======
-  $ test -f $FAKE_BINDIR/.fubar/3-DLNN4P8=-E9GMSP3FDK======-EDQ7APJ6
-  $ test -x $FAKE_BINDIR/.fubar/3-DLNN4P8=-E9GMSP3FDK======-EDQ7APJ6
+  $ (cd $FAKE_BINDIR/.fubar && find * -type f)
+  2-/5KMNCOBID5NNASO=-EHK6IRJ7EC======
+  3-/DLNN4P8=-E9GMSP3FDK======-EDQ7APJ6
+  $ test -f $FAKE_BINDIR/.fubar/2-/5KMNCOBID5NNASO=-EHK6IRJ7EC======
+  $ test -x $FAKE_BINDIR/.fubar/2-/5KMNCOBID5NNASO=-EHK6IRJ7EC======
+  $ test -f $FAKE_BINDIR/.fubar/3-/DLNN4P8=-E9GMSP3FDK======-EDQ7APJ6
+  $ test -x $FAKE_BINDIR/.fubar/3-/DLNN4P8=-E9GMSP3FDK======-EDQ7APJ6

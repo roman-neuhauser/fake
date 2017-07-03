@@ -14,5 +14,5 @@ test::
   .fubar
   fubar
 
-  $ ls $FAKE_BINDIR/.fubar
-  2+EDN62===-CPQG====
+  $ (cd $FAKE_BINDIR/.fubar && find * -type f)
+  2+/EDN62===-CPQG====

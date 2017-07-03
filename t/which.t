@@ -28,3 +28,19 @@ test::
 
   $ fake -w fubar snafu
   /*/.fubar/0+ (glob)
+
+  $ fake -c fubar omg wtf
+
+  $ fake -w fubar omg wtf | sed "s,$FAKE_BINDIR,/*,"
+  /*/.fubar/2+/DTMME===-ETQ6C===
+
+  $ fake -w fubar omg wtf rofl lmao | sed "s,$FAKE_BINDIR,/*,"
+  /*/.fubar/2+/DTMME===-ETQ6C===
+
+  $ fake fubar omg wtf
+
+  $ fake -w fubar omg wtf | sed "s,$FAKE_BINDIR,/*,"
+  /*/.fubar/2-/DTMME===-ETQ6C===
+
+  $ fake -w fubar omg wtf rofl lmao | sed "s,$FAKE_BINDIR,/*,"
+  /*/.fubar/2+/DTMME===-ETQ6C===

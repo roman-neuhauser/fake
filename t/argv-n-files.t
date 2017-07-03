@@ -11,10 +11,10 @@ test::
 
   $ test -f $FAKE_BINDIR/fubar
   $ test -d $FAKE_BINDIR/.fubar
-  $ ls $FAKE_BINDIR/.fubar
-  2-5KMMQRRICK======-EDQ7APJ6
-  $ test -f $FAKE_BINDIR/.fubar/2-5KMMQRRICK======-EDQ7APJ6
-  $ test -x $FAKE_BINDIR/.fubar/2-5KMMQRRICK======-EDQ7APJ6
+  $ (cd $FAKE_BINDIR/.fubar && find * -type f)
+  2-/5KMMQRRICK======-EDQ7APJ6
+  $ test -f $FAKE_BINDIR/.fubar/2-/5KMMQRRICK======-EDQ7APJ6
+  $ test -x $FAKE_BINDIR/.fubar/2-/5KMMQRRICK======-EDQ7APJ6
 
-  $ cat $FAKE_BINDIR/.fubar/2-5KMMQRRICK======-EDQ7APJ6
+  $ cat $FAKE_BINDIR/.fubar/2-/5KMMQRRICK======-EDQ7APJ6
   #!/bin/sh
