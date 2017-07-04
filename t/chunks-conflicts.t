@@ -5,10 +5,6 @@ setup::
 
   $ . $TESTDIR/setup
 
-  $ if type fubar >/dev/null 2>&1; then
-  >   echo "collision with $(type fubar)"
-  >   exit 80
-  > fi
 
 test::
 
