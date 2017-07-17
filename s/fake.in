@@ -292,6 +292,7 @@ chmod +x "$name"
   sed \
     -e "s#PATH#$PATH" \
     -e "s#basex#$basex" \
+    -e "s#chunksize#$FAKE_BACKEND_CHUNKSIZE" \
     -e "s#impldir#$impldir"
 } > "$frontend"
 chmod a+x "$frontend"
@@ -300,11 +301,15 @@ exit
 #### BEGIN FRONTEND
 
 impldir="#impldir#"
+chunksize="#chunksize#"
 basex="${basex:-#basex#}"
 
 export PATH="#PATH#"
 
 hashargs hargv "$@"
+
+hargv="$(printf "%s" "$hargv" | sed 's:.\{'"$chunksize"'\}:&/:g')"
+hargv="${hargv%/}"
 
 export ARGV0="${0##*/}"
 
