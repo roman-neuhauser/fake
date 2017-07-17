@@ -143,10 +143,9 @@ expected() # {{{
   fi
   local fmt=
   case "${name#$argc}" in
-  -*) fmt="fake: expected: %s\n" ;;
-  +*) fmt="fake: expected: %s [...]\n" ;;
+  +*) set -- "$@" "[...]" ;;
   esac
-  printf -- "$fmt" "$ARGV0${*:+ $*}"
+  detail expected "$@"
 } # }}}
 
 mismatch() # {{{
@@ -157,11 +156,17 @@ mismatch() # {{{
   find "$impldir" -mindepth 1 -type f -print | sort | while read fname; do
     expected "$fname"
   done
-  printf -- "fake: received: %s" "$ARGV0"
-  test $# -eq 0 || printf -- " %s" "$@"
-  printf -- "\n"
+  detail received "$@"
   exit 100
 } >&2 # }}}
+
+detail() # {{{
+{
+  local mode=$1; shift
+  printf -- "fake: %s: %s" "$mode" "$ARGV0"
+  test $# -eq 0 || printf -- " %s" "$@"
+  printf -- "\n"
+} # }}}
 
 hashargs() # {{{
 {
