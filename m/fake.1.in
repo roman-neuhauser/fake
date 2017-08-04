@@ -15,9 +15,8 @@
 .Nm
 . Fl h
 .Nm
-. Op Fl b No | Fl e No | Fl o
+. Op Fl b No | Fl e No | Fl o No | Fl v
 . Op Fl c
-. Op Fl v
 . Op Fl x Ar N
 . Ar CMD
 . Op Ar ARG Ns ...
