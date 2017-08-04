@@ -241,9 +241,14 @@ impl_has_body() # {{{
 } # }}}
 impl_passthrough() # {{{
 {
-  sed 's/^ *//' > "${1:?}" <<\EOF
+  sed \
+    -e 's/^ *//' \
+    -e 's/#PATH#/$FAKE_BINDIR:$PATH/' \
+    > "${1:?}" <<\EOF
   #!/bin/sh
-  exec "$ARGV0" "$@"
+  bin=$(which "$ARGV0")
+  export PATH=#PATH#
+  exec "$bin" "$@"
 EOF
 } # }}}
 impl_has_errout() # {{{
