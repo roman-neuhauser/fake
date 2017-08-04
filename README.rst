@@ -61,14 +61,14 @@ Usage
 
   $ fake -h
   fake: usage: fake -h|-hh
-  fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
 
   $ fake -hh
   fake: usage: fake -h|-hh
-  fake: usage: fake [-b | -e | -o] [-c] [-v] [-x N] CMD [ARG...]
+  fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   
