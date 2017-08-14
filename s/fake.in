@@ -32,7 +32,10 @@ basex="${basex:-@basex@}"
 usage() # {{{
 {
   local ex=${1-100}
-  test $ex -ne 100 || printf >&2 'fake: error: missing operand\n'
+  test $ex -ne 100 ||
+    printf >&2 'fake: error: missing operand\n'
+  test $ex -ne 101 ||
+    printf >&2 "fake: error: -%s cannot be used with -%s\n" "$2" "$3"
   printf >&2 'fake: usage: %s -h | -hh\n' "${0##*/}"
   printf >&2 'fake: usage: %s [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]\n' "${0##*/}"
   printf >&2 'fake: usage: %s -p [-c] CMD [ARG...]\n' "${0##*/}"
@@ -69,6 +72,17 @@ EOF
   fi
   exit $ex
 } # }}}
+
+checkopts() # {{{
+{
+  local bad= curr=$1; shift
+  for bad in "$@"; do
+    case $opts in
+    *$bad*) usage 101 $curr $opts ;;
+    esac
+  done
+  opts="$opts$curr"
+} >&2 # }}}
 
 #### SHARED {{{
 
@@ -189,19 +203,28 @@ reflect=0
 exitcode=
 usage=0
 which=0
+opts=
 
 while getopts hbceopvwx: OPTNAME; do
 case "$OPTNAME" in
 h) usage=$((usage - 1)) ;;
 
-b) copy_body=asis ;;
-c) catchall=1 ;;
-e) copy_body=stderr ;;
-o) copy_body=stdout ;;
-p) passthrough=1 ;;
-v) reflect=1 ;;
-w) which=1 ;;
-x) exitcode="$OPTARG" ;;
+b)  checkopts $OPTNAME e o p v w x
+    copy_body=asis ;;
+c)  checkopts $OPTNAME w
+    catchall=1 ;;
+e)  checkopts $OPTNAME b o p v w
+    copy_body=stderr ;;
+o)  checkopts $OPTNAME b e p v w
+    copy_body=stdout ;;
+p)  checkopts $OPTNAME b e o v w x
+    passthrough=1 ;;
+v)  checkopts $OPTNAME b e o p w
+    reflect=1 ;;
+w)  checkopts $OPTNAME b c e o p v x
+    which=1 ;;
+x)  checkopts $OPTNAME b p w
+    exitcode="$OPTARG" ;;
 esac
 done; shift $((OPTIND - 1))
 
