@@ -48,7 +48,10 @@ populate() # {{{
   > $2
 } # }}}
 
-rootdir=$(dirname $(realpath $0))
+rootdir=$(cd "${0%/*}" && pwd) || {
+  printf -->&2 "%s: %s\n" "$0" "cannot determine rootdir"
+  exit 1
+}
 
 prefix=/usr/local
 bindir='$(prefix)/bin'
