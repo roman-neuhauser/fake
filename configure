@@ -43,7 +43,7 @@ populate() # {{{
     -e "s@bindir@$bindirg" \
     -e "s@datarootdir@$datarootdirg" \
     -e "s@mandir@$mandirg" \
-    -e "s@basex@$basexg" \
+    -e "s@basexy@$basexyg" \
     $1 \
   > $2
 } # }}}
@@ -68,7 +68,7 @@ for a in "$@"; do
     mandir_set=1
   ;;
   --prefix=*)       prefix="${a#*=}"      ;;
-  --with-basex=*)   basex="${a#*=}"       ;;
+  --with-basexy=*)  basexy="${a#*=}"       ;;
   esac
 done
 
@@ -76,6 +76,6 @@ if test "$prefix" = /usr/local && test $mandir_set = 0; then
   mandir=$prefix/man
 fi
 
-findtool basex basex
+findtool basexy basexy
 
 populate $rootdir/GNUmakefile.in GNUmakefile

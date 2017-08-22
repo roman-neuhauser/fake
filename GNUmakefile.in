@@ -10,7 +10,7 @@ smandir = m
 srcdir = s
 testdir = t
 
-basex = @basex@
+basexy = @basexy@
 
 cram = cram
 cramflags = -v
@@ -47,7 +47,7 @@ fake: fake.tmp
 	install -m 755 $< $@
 
 fake.tmp: $(srcdir)/fake.in
-	sed -e 's:@basex''@:$(basex):' < $< > $@
+	sed -e 's:@basexy''@:$(basexy):' < $< > $@
 
 fake.1: $(smandir)/fake.1.in
 	cp $< $@

@@ -4,7 +4,7 @@
 set -e
 set -u
 
-basex="${basex:-@basex@}"
+basexy="${basexy:-@basexy@}"
 
 : ${FAKE_BACKEND_CHUNKSIZE:=255}
 
@@ -86,9 +86,9 @@ checkopts() # {{{
 
 #### SHARED {{{
 
-basex() # {{{
+basexy() # {{{
 {
-  command "$basex" "$@"
+  command "$basexy" "$@"
 } # }}}
 
 catchalls() # {{{
@@ -151,7 +151,7 @@ expected() # {{{
     while test $i -le $argc; do
       arg="${argv%%-*}"
       argv="${argv#*-}"
-      set -- "$@" "$(printf -- "%s" "$arg" | basex -d base32hex)"
+      set -- "$@" "$(printf -- "%s" "$arg" | basexy -d base32hex)"
       i=$((i+1))
     done
   fi
@@ -187,7 +187,7 @@ hashargs() # {{{
   local rv=$1 lhargv= arg=; shift
   eval $rv=
   for arg in "$@"; do
-    lhargv="$lhargv-$(printf -- "%s" "$arg" | basex -e base32hex)"
+    lhargv="$lhargv-$(printf -- "%s" "$arg" | basexy -e base32hex)"
   done
   lhargv="${lhargv#-}"
   eval $rv='"$lhargv"'
@@ -319,7 +319,7 @@ chmod +x "$name"
   sed -n '/^#### BEGIN FRONTEND$/,$p' < "$0" |
   sed \
     -e "s#PATH#$PATH" \
-    -e "s#basex#$basex" \
+    -e "s#basexy#$basexy" \
     -e "s#chunksize#$FAKE_BACKEND_CHUNKSIZE" \
     -e "s#impldir#$impldir"
 } > "$frontend"
@@ -330,7 +330,7 @@ exit
 
 impldir="#impldir#"
 chunksize="#chunksize#"
-basex="${basex:-#basex#}"
+basexy="${basexy:-#basexy#}"
 
 export PATH="#PATH#"
 

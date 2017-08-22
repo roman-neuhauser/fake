@@ -11,9 +11,9 @@ Group:          Development/Tools/Version Control
 Source:         %{name}-%{version}.tar.gz
 BuildArch:      noarch
 BuildRoot:      %_tmppath/%name-%version-build
-BuildRequires:  basex
+BuildRequires:  basexy
 BuildRequires:  cram
-Requires:       basex
+Requires:       basexy
 
 %description
 Easy creation of simple mocks for commandline utilities.

@@ -175,7 +175,7 @@ fake: received: foo
 .
 .\" SEE ALSO {{{
 .Sh SEE ALSO
-.Xr basex 1 ,
+.Xr basexy 1 ,
 .Xr sh 1 .
 .\" }}}
 .

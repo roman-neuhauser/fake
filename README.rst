@@ -219,12 +219,12 @@ Published under the `MIT license`__, see `LICENSE file`__.
 Installation
 ============
 
-*Fake* requires POSIX shell and `BaseX`_ to run, plus GNU make
+*Fake* requires POSIX shell and `BaseXY`_ to run, plus GNU make
 to build and `Cram`_ to run tests. ::
 
   % ./configure
   % make check
   % sudo make install
 
-.. _BaseX: https://github.com/roman-neuhauser/basex
+.. _BaseXY: https://github.com/roman-neuhauser/basexy
 .. _Cram: https://bitheap.org/cram/
