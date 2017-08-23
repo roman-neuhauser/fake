@@ -13,6 +13,7 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [100]
@@ -22,6 +23,7 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [100]
@@ -30,6 +32,7 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
 
@@ -37,6 +40,7 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   
   Options:
@@ -52,9 +56,10 @@ test::
             stdin to its stderr.
     -o      Output.  Created fake will emit current
             stdin to its stdout.
-    -p      Pass-through.  Created fake will re-execute
-            its argv again after removing $FAKE_BINDIR
-            from $PATH.
+    -p      Pass-through.  This backend will remove
+            $FAKE_BINDIR from $PATH and re-exec its argv.
+    -t      Transparent.  Like fake -p but the delegate
+            will have the original $PATH in environment.
     -v      Verbose.  Reflect received argv on stderr.
     -w      Which.  Print pathname of the fake that
             would receive given CMD [ARG...].

@@ -26,6 +26,11 @@
 . Ar CMD
 . Op Ar ARG Ns ...
 .Nm
+. Fl t
+. Op Fl c
+. Ar CMD
+. Op Ar ARG Ns ...
+.Nm
 . Fl w
 . Ar CMD
 . Op Ar ARG Ns ...
@@ -97,10 +102,19 @@ Output.
 Use standard input as standard ouput of the backend being created.
 .It Fl p
 Pass-through.
-Created mock will re-execute its argv again after removing
+Created mock will remove
 . Ev $FAKE_BINDIR
 from
-. Ev $PATH .
+. Ev $PATH
+and re-exec its argv.
+.
+.It Fl t
+Transparent.  Like
+. Nm
+. Fl p
+but the delegate will have the original
+. Ev $PATH
+in environment.
 .It Fl v
 Verbose.
 Reflect received argv on stderr.

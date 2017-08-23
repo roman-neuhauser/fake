@@ -14,6 +14,7 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [101]
@@ -23,6 +24,7 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [101]
@@ -32,6 +34,7 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [101]
@@ -41,6 +44,7 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [101]
@@ -50,6 +54,17 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
+  fake: usage: fake -w CMD [ARG...]
+  fake: use `fake -hh` to display help
+  [101]
+
+  $ fake -wt
+  fake: error: -t cannot be used with -w
+  fake: usage: fake -h | -hh
+  fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
+  fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [101]
@@ -59,6 +74,7 @@ test::
   fake: usage: fake -h | -hh
   fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
   fake: usage: fake -p [-c] CMD [ARG...]
+  fake: usage: fake -t [-c] CMD [ARG...]
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [101]

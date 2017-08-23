@@ -39,6 +39,7 @@ usage() # {{{
   printf >&2 'fake: usage: %s -h | -hh\n' "${0##*/}"
   printf >&2 'fake: usage: %s [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]\n' "${0##*/}"
   printf >&2 'fake: usage: %s -p [-c] CMD [ARG...]\n' "${0##*/}"
+  printf >&2 'fake: usage: %s -t [-c] CMD [ARG...]\n' "${0##*/}"
   printf >&2 'fake: usage: %s -w CMD [ARG...]\n' "${0##*/}"
   if test $ex -gt -2; then
     printf >&2 'fake: use `fake -hh` to display help\n'
@@ -58,9 +59,10 @@ usage() # {{{
 	          stdin to its stderr.
 	  -o      Output.  Created fake will emit current
 	          stdin to its stdout.
-	  -p      Pass-through.  Created fake will re-execute
-	          its argv again after removing $FAKE_BINDIR
-	          from $PATH.
+	  -p      Pass-through.  This backend will remove
+	          $FAKE_BINDIR from $PATH and re-exec its argv.
+	  -t      Transparent.  Like fake -p but the delegate
+	          will have the original $PATH in environment.
 	  -v      Verbose.  Reflect received argv on stderr.
 	  -w      Which.  Print pathname of the fake that
 	          would receive given CMD [ARG...].
@@ -198,6 +200,7 @@ hashargs() # {{{
 catchall=0
 copy_body=nope
 passthrough=0
+transparent=0
 has_output=0
 reflect=0
 exitcode=
@@ -205,25 +208,27 @@ usage=0
 which=0
 opts=
 
-while getopts hbceopvwx: OPTNAME; do
+while getopts hbceoptvwx: OPTNAME; do
 case "$OPTNAME" in
 h) usage=$((usage - 1)) ;;
 
-b)  checkopts $OPTNAME e o p v w
+b)  checkopts $OPTNAME e o p t v w
     copy_body=asis ;;
 c)  checkopts $OPTNAME w
     catchall=1 ;;
-e)  checkopts $OPTNAME b o p v w
+e)  checkopts $OPTNAME b o p t v w
     copy_body=stderr ;;
-o)  checkopts $OPTNAME b e p v w
+o)  checkopts $OPTNAME b e p t v w
     copy_body=stdout ;;
-p)  checkopts $OPTNAME b e o v w x
+p)  checkopts $OPTNAME b e o t v w x
     passthrough=1 ;;
-v)  checkopts $OPTNAME b e o p w
+t)  checkopts $OPTNAME b e o p v w x
+    transparent=2 ;;
+v)  checkopts $OPTNAME b e o p t w
     reflect=1 ;;
-w)  checkopts $OPTNAME b c e o p v x
+w)  checkopts $OPTNAME b c e o p t v x
     which=1 ;;
-x)  checkopts $OPTNAME p w
+x)  checkopts $OPTNAME p t w
     exitcode="$OPTARG" ;;
 esac
 done; shift $((OPTIND - 1))
@@ -269,6 +274,15 @@ impl_passthrough() # {{{
   exec "$ARGV0" "$@"
 EOF
 } # }}}
+impl_transparent() # {{{
+{
+  sed 's/^ *//' > "${1:?}" <<\EOF
+  #!/bin/sh
+  argv0=$(command -v "$ARGV0")
+  export PATH="$FAKE_BINDIR${PATH+:$PATH}"
+  exec "$argv0" "$@"
+EOF
+} # }}}
 impl_has_errout() # {{{
 {
   {
@@ -307,6 +321,8 @@ elif test $reflect -ne 0; then
   impl_reflect "$name"
 elif test $passthrough -ne 0; then
   impl_passthrough "$name"
+elif test $transparent -ne 0; then
+  impl_transparent "$name"
 else
   impl_default "$name"
 fi
@@ -318,6 +334,7 @@ chmod +x "$name"
   sed -n '/^#### SHARED {{{/,/### SHARED }}}/p' < "$0"
   sed -n '/^#### BEGIN FRONTEND$/,$p' < "$0" |
   sed \
+    -e "s#FAKE_BINDIR#$FAKE_BINDIR" \
     -e "s#PATH#$PATH" \
     -e "s#basexy#$basexy" \
     -e "s#chunksize#$FAKE_BACKEND_CHUNKSIZE" \
@@ -332,6 +349,7 @@ impldir="#impldir#"
 chunksize="#chunksize#"
 basexy="${basexy:-#basexy#}"
 
+export FAKE_BINDIR="#FAKE_BINDIR#"
 export PATH="#PATH#"
 
 hashargs hargv "$@"
