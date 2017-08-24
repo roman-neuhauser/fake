@@ -53,12 +53,3 @@ test::
   fake: usage: fake -w CMD [ARG...]
   fake: use `fake -hh` to display help
   [101]
-
-  $ fake -bx 69
-  fake: error: -x cannot be used with -b
-  fake: usage: fake -h | -hh
-  fake: usage: fake [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]
-  fake: usage: fake -p [-c] CMD [ARG...]
-  fake: usage: fake -w CMD [ARG...]
-  fake: use `fake -hh` to display help
-  [101]

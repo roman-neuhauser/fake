@@ -209,7 +209,7 @@ while getopts hbceopvwx: OPTNAME; do
 case "$OPTNAME" in
 h) usage=$((usage - 1)) ;;
 
-b)  checkopts $OPTNAME e o p v w x
+b)  checkopts $OPTNAME e o p v w
     copy_body=asis ;;
 c)  checkopts $OPTNAME w
     catchall=1 ;;
@@ -223,7 +223,7 @@ v)  checkopts $OPTNAME b e o p w
     reflect=1 ;;
 w)  checkopts $OPTNAME b c e o p v x
     which=1 ;;
-x)  checkopts $OPTNAME b p w
+x)  checkopts $OPTNAME p w
     exitcode="$OPTARG" ;;
 esac
 done; shift $((OPTIND - 1))
