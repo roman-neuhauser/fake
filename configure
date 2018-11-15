@@ -68,7 +68,7 @@ for a in "$@"; do
     mandir_set=1
   ;;
   --prefix=*)       prefix="${a#*=}"      ;;
-  --with-basexy=*)  basexy="${a#*=}"       ;;
+  --with-basexy=*)  basexy="${a#*=}"      ;;
   esac
 done
 
