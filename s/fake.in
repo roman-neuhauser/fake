@@ -1,4 +1,4 @@
-#!/bin/sh
+#!@baseshell@
 # vim: sw=2 sts=2 et fdm=marker cms=\ #\ %s
 
 set -e
@@ -270,14 +270,14 @@ impl_has_body() # {{{
 impl_passthrough() # {{{
 {
   sed 's/^ *//' > "${1:?}" <<\EOF
-  #!/bin/sh
+  #!@baseshell@
   exec "$ARGV0" "$@"
 EOF
 } # }}}
 impl_transparent() # {{{
 {
   sed 's/^ *//' > "${1:?}" <<\EOF
-  #!/bin/sh
+  #!@baseshell@
   argv0=$(command -v "$ARGV0")
   export PATH="$FAKE_BINDIR${PATH+:$PATH}"
   exec "$argv0" "$@"
@@ -286,7 +286,7 @@ EOF
 impl_has_errout() # {{{
 {
   {
-    printf -- "%s\n" "#!/bin/sh"
+    printf -- "%s\n" "#!@baseshell@"
     printf -- "%s\n" "cat >&${1:?} <<\\EOF"
     cat
     printf -- "%s\n" "EOF"
@@ -295,7 +295,7 @@ impl_has_errout() # {{{
 impl_reflect() # {{{
 {
   sed 's/^ *//' > "${1:?}" <<\EOF
-  #!/bin/sh
+  #!@baseshell@
   exec >&2
   printf "%s" "${ARGV0##*/}"
   test $# -eq 0 || printf " %s" "$*"
@@ -305,7 +305,7 @@ EOF
 impl_default() # {{{
 {
   {
-    printf -- "%s\n" "#!/bin/sh"
+    printf -- "%s\n" "#!@baseshell@"
   } > "${1:?}"
 } # }}}
 
@@ -330,7 +330,7 @@ test -z "$exitcode" || printf -- >> "$name" "exit %s\n" "$exitcode"
 chmod +x "$name"
 
 {
-  printf '#!/bin/sh\n\n'
+  printf '#!@baseshell@\n\n'
   sed -n '/^#### SHARED {{{/,/### SHARED }}}/p' < "$0"
   sed -n '/^#### BEGIN FRONTEND$/,$p' < "$0" |
   sed \
