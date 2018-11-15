@@ -19,7 +19,7 @@ test::
   $ test -f $FAKE_BINDIR/.fubar/0-
   $ test -x $FAKE_BINDIR/.fubar/0-
   $ cat $FAKE_BINDIR/.fubar/0-
-  #!/bin/sh
+  #!*/sh (glob)
   cat >&2 <<\EOF
   gloomy sunday...
   EOF
