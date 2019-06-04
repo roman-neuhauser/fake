@@ -72,6 +72,10 @@ for a in "$@"; do
   --prefix=*)       prefix="${a#*=}"      ;;
   --with-basexy=*)  basexy="${a#*=}"      ;;
   --with-shebang=*) shebang="${a#*=}"     ;;
+  --?*)
+    echo >&2 "unknown option: $a"
+    exit 1
+  ;;
   esac
 done
 
