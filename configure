@@ -73,6 +73,10 @@ for a in "$@"; do
     echo >&2 "unknown option: $a"
     exit 1
   ;;
+  *)
+    echo >&2 "unknown operand: $a"
+    exit 1
+  ;;
   esac
 done
 
