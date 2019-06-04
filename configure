@@ -44,7 +44,7 @@ populate() # {{{
     -e "s@datarootdir@$datarootdirg" \
     -e "s@mandir@$mandirg" \
     -e "s@basexy@$basexyg" \
-    -e "s@baseshell@$baseshellg" \
+    -e "s@shebang@$shebangg" \
     $1 \
   > $2
 } # }}}
@@ -59,11 +59,10 @@ bindir='$(prefix)/bin'
 datarootdir='$(prefix)/share'
 mandir='$(datarootdir)/man'
 mandir_set=0
-baseshell=/bin/sh
+shebang=/bin/sh
 
 for a in "$@"; do
   case $a in
-  --baseshell=*)    baseshell="${a#*=}"   ;;
   --bindir=*)       bindir="${a#*=}"      ;;
   --datarootdir=*)  datarootdir="${a#*=}" ;;
   --mandir=*)
@@ -72,6 +71,7 @@ for a in "$@"; do
   ;;
   --prefix=*)       prefix="${a#*=}"      ;;
   --with-basexy=*)  basexy="${a#*=}"      ;;
+  --with-shebang=*) shebang="${a#*=}"     ;;
   esac
 done
 

@@ -3,7 +3,7 @@ bindir = @bindir@
 datarootdir = @datarootdir@
 mandir = @mandir@
 man1dir = $(mandir)/man1
-baseshell = @baseshell@
+shebang = @shebang@
 
 tests = $(testdir)/*.t
 
@@ -48,7 +48,7 @@ fake: fake.tmp
 	install -m 755 $< $@
 
 fake.tmp: $(srcdir)/fake.in
-	sed -e 's:@basexy''@:$(basexy):' -e 's:@baseshell''@:$(baseshell):' < $< > $@
+	sed -e 's:@basexy''@:$(basexy):' -e 's:@shebang''@:$(shebang):' < $< > $@
 
 fake.1: $(smandir)/fake.1.in
 	cp $< $@
