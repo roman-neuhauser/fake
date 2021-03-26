@@ -6,7 +6,7 @@ set -u
 
 basexy="${basexy:-@basexy@}"
 
-: ${FAKE_BACKEND_CHUNKSIZE:=255}
+: ${FAKE_BACKEND_CHUNKSIZE:=119}
 
 # need to protect this code from already-created fakes {{{
 # this must be syntax-, not command-based,

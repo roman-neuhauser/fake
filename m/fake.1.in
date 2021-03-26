@@ -73,7 +73,9 @@ To avoid
 errors,
 .Nm
 splits backend names into segments
-of 255 characters.
+of
+.Ev $FAKE_BACKEND_CHUNKSIZE
+characters.
 .Pp
 At run time, the frontend executes the most specific backend for the given
 arguments; if no backend matches, the frontend will emit diagnostic messages
@@ -150,7 +152,7 @@ Length of each segment backend names are split into.
 Must
 .Em not
 be divisible by 8.
-Defaults to 255.
+Defaults to 119.
 .It Ev FAKE_BINDIR
 Directory where
 .Nm

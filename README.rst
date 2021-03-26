@@ -38,7 +38,7 @@ A backend for any argv starting with ``echo hello world`` will be named
 ``.echo/2+/D1IMOR3F-ETNN4R34``.
 
 To avoid ``ENAMETOOLONG`` errors, ``fake`` splits backend names into segments
-of 255 characters.
+of ``$FAKE_BACKEND_CHUNKSIZE`` characters.
 
 At run time, the frontend executes the most specific backend for the given
 arguments; if no backend matches, the frontend will emit diagnostic messages
