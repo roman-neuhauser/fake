@@ -263,30 +263,39 @@ if test $which -eq 1; then
   exit 0
 fi
 
+shebang() # {{{
+{
+  printf "#!%s\n" "/bin/sh"
+} # }}}
+
 impl_has_body() # {{{
 {
   cat > "${1:?}"
 } # }}}
 impl_passthrough() # {{{
 {
-  sed 's/^ *//' > "${1:?}" <<\EOF
-  #!/bin/sh
-  exec "$ARGV0" "$@"
+  {
+    shebang
+    sed 's/^ *//' <<\EOF
+    exec "$ARGV0" "$@"
 EOF
+  } > "${1:?}"
 } # }}}
 impl_transparent() # {{{
 {
-  sed 's/^ *//' > "${1:?}" <<\EOF
-  #!/bin/sh
-  argv0=$(command -v "$ARGV0")
-  export PATH="$FAKE_BINDIR${PATH+:$PATH}"
-  exec "$argv0" "$@"
+  {
+    shebang
+    sed 's/^ *//' <<\EOF
+    argv0=$(command -v "$ARGV0")
+    export PATH="$FAKE_BINDIR${PATH+:$PATH}"
+    exec "$argv0" "$@"
 EOF
+  } > "${1:?}"
 } # }}}
 impl_has_errout() # {{{
 {
   {
-    printf -- "%s\n" "#!/bin/sh"
+    shebang
     printf -- "%s\n" "cat >&${1:?} <<\\EOF"
     cat
     printf -- "%s\n" "EOF"
@@ -294,18 +303,20 @@ impl_has_errout() # {{{
 } # }}}
 impl_verbose() # {{{
 {
-  sed 's/^ *//' > "${1:?}" <<\EOF
-  #!/bin/sh
-  exec >&2
-  printf "%s" "${ARGV0##*/}"
-  test $# -eq 0 || printf " %s" "$*"
-  printf "\n"
+  {
+    shebang
+    sed 's/^ *//' <<\EOF
+    exec >&2
+    printf "%s" "${ARGV0##*/}"
+    test $# -eq 0 || printf " %s" "$*"
+    printf "\n"
 EOF
+  } > "${1:?}"
 } # }}}
 impl_default() # {{{
 {
   {
-    printf -- "%s\n" "#!/bin/sh"
+    shebang
   } > "${1:?}"
 } # }}}
 
@@ -330,7 +341,7 @@ test -z "$exitcode" || printf -- >> "$name" "exit %s\n" "$exitcode"
 chmod +x "$name"
 
 {
-  printf '#!/bin/sh\n\n'
+  shebang
   sed -n '/^#### SHARED {{{/,/### SHARED }}}/p' < "$0"
   sed -n '/^#### BEGIN FRONTEND$/,$p' < "$0" |
   sed \
