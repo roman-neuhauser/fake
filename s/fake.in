@@ -102,7 +102,7 @@ catchalls() # {{{
     -maxdepth 1 \
     -name '*+*' \
   | while read c; do \
-      find "$c" -type f; \
+      find "$c" -type f -name impl; \
     done \
   | sort -rn
 } # }}}
@@ -110,7 +110,7 @@ catchalls() # {{{
 findimpl() # {{{
 {
   local rv=$1 impldir="$2" argc="$3" hargv="$4"
-  local be="$impldir/$argc-${hargv:+/$hargv}"
+  local be="$impldir/$argc-${hargv:+/$hargv}/impl"
   eval $rv=
   if test -x "$be"; then
     eval $rv='"$be"'
@@ -121,6 +121,7 @@ findimpl() # {{{
   hargv="$(printf -- "%s" "$hargv" | sed 's:/::g')"
   for p in $(catchalls "$impldir"); do
     local f="${p#$impldir/}"
+    f="${f%/impl}"
     local fargc="${f%%+*}"
     local fargv="${f#*+}"
     fargv="$(printf -- "%s" "$fargv" | sed 's:/::g')"
@@ -170,8 +171,9 @@ mismatch() # {{{
   local impldir="$1" fname=
   shift
   printf -- "fake: error: argv mismatch\n"
-  find "$impldir" -mindepth 1 -type f -print | sort | while read fname; do
-    expected "$fname"
+  find "$impldir" -mindepth 1 -type f -name impl -print \
+  | sort | while read fname; do
+    expected "${fname%/impl}"
   done
   detail received "$@"
   exit 100
@@ -255,7 +257,7 @@ hashargs hargv "$@"
 
 hargv="$(printf "%s" "$hargv" | sed 's:.\{'"$FAKE_BACKEND_CHUNKSIZE"'\}:&/:g')"
 hargv="${hargv%/}"
-name="$name${hargv:+/$hargv}"
+name="$name${hargv:+/$hargv}/impl"
 
 impl=
 if test $which -eq 1; then

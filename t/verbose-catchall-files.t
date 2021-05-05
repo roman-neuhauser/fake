@@ -11,3 +11,5 @@ test::
   $ test -d $FAKE_BINDIR/.fubar
   $ ls $FAKE_BINDIR/.fubar
   0+
+  $ ls $FAKE_BINDIR/.fubar/0+
+  impl
