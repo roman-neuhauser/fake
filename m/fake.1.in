@@ -70,11 +70,11 @@ The filepath of each backend encodes the argument vector(s) handled by it.
 A backend for
 .Li echo hello world
 will be named
-.Pa .echo/2-/D1IMOR3F-ETNN4R34 .
+.Pa .echo/2-/D1IMOR3F-ETNN4R34/impl .
 A backend for any argv starting with
 .Li echo hello world
 will be named
-.Pa .echo/2+/D1IMOR3F-ETNN4R34 .
+.Pa .echo/2+/D1IMOR3F-ETNN4R34/impl .
 .Pp
 To avoid
 .Er ENAMETOOLONG
