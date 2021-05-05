@@ -1,5 +1,5 @@
-transparent fake keeps $FAKE_BINDIR in $PATH
-============================================
+-t combines with -v
+===================
 
 setup::
 
@@ -18,9 +18,19 @@ setup::
 test::
 
   $ fake -cvx 42 snafu
-  $ fake -ct fubar
+  $ fake -ctv fubar
 
   $ fubar rofl lmao
+  fubar rofl lmao
   *.../fubar relaying to snafu (glob)
   snafu rofl lmao
+  [42]
+
+  $ fubar rofl lmao >/dev/null
+  fubar rofl lmao
+  snafu rofl lmao
+  [42]
+
+  $ fubar rofl lmao 2>/dev/null
+  *.../fubar relaying to snafu (glob)
   [42]

@@ -15,19 +15,27 @@
 .Nm
 . Fl h
 .Nm
-. Op Fl b No | Fl e No | Fl o No | Fl v
+. Op Fl e No | Fl o
 . Op Fl c
+. Op Fl v
 . Op Fl x Ar N
+. Ar CMD
+. Op Ar ARG Ns ...
+.Nm
+. Fl b
+. Op Fl c
 . Ar CMD
 . Op Ar ARG Ns ...
 .Nm
 . Fl p
 . Op Fl c
+. Op Fl v
 . Ar CMD
 . Op Ar ARG Ns ...
 .Nm
 . Fl t
 . Op Fl c
+. Op Fl v
 . Ar CMD
 . Op Ar ARG Ns ...
 .Nm
