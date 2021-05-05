@@ -215,7 +215,7 @@ while getopts hbceoptvwx: OPTNAME; do
 case "$OPTNAME" in
 h) usage=$((usage - 1)) ;;
 
-b)  checkopts $OPTNAME e o p t v w
+b)  checkopts $OPTNAME e o p v w
     copy_body=asis ;;
 c)  checkopts $OPTNAME w
     catchall=1 ;;
@@ -225,7 +225,7 @@ o)  checkopts $OPTNAME b e p t w
     copy_body=stdout ;;
 p)  checkopts $OPTNAME b e o t w x
     passthrough=1 ;;
-t)  checkopts $OPTNAME b e o p w x
+t)  checkopts $OPTNAME e o p w x
     transparent=2 ;;
 v)  checkopts $OPTNAME b w
     verbose=1 ;;
@@ -286,9 +286,9 @@ impl_has_body() # {{{
 {
   {
     shebang
-    sed 's/^ *//' <<\EOF
-    exec "${0%/impl}/body" "$@"
-EOF
+    test $transparent -eq 0 ||
+      echo 'export PATH="$FAKE_BINDIR${PATH+:$PATH}"'
+    echo 'exec "${0%/impl}/body" "$@"'
   } > "${1:?}"
   local body="${1%/impl}/body"
   cat > "$body"
