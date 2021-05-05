@@ -37,9 +37,10 @@ usage() # {{{
   test $ex -ne 101 ||
     printf >&2 "fake: error: -%s cannot be used with -%s\n" "$2" "$3"
   printf >&2 'fake: usage: %s -h | -hh\n' "${0##*/}"
-  printf >&2 'fake: usage: %s [-b | -e | -o | -v] [-c] [-x N] CMD [ARG...]\n' "${0##*/}"
-  printf >&2 'fake: usage: %s -p [-c] CMD [ARG...]\n' "${0##*/}"
-  printf >&2 'fake: usage: %s -t [-c] CMD [ARG...]\n' "${0##*/}"
+  printf >&2 'fake: usage: %s [-e | -o] [-c] [-v] [-x N] CMD [ARG...]\n' "${0##*/}"
+  printf >&2 'fake: usage: %s -b [-c] CMD [ARG...]\n' "${0##*/}"
+  printf >&2 'fake: usage: %s -p [-c] [-v] CMD [ARG...]\n' "${0##*/}"
+  printf >&2 'fake: usage: %s -t [-c] [-v] CMD [ARG...]\n' "${0##*/}"
   printf >&2 'fake: usage: %s -w CMD [ARG...]\n' "${0##*/}"
   if test $ex -gt -2; then
     printf >&2 'fake: use `fake -hh` to display help\n'
@@ -216,15 +217,15 @@ b)  checkopts $OPTNAME e o p t v w
     copy_body=asis ;;
 c)  checkopts $OPTNAME w
     catchall=1 ;;
-e)  checkopts $OPTNAME b o p t v w
+e)  checkopts $OPTNAME b o p t w
     copy_body=stderr ;;
-o)  checkopts $OPTNAME b e p t v w
+o)  checkopts $OPTNAME b e p t w
     copy_body=stdout ;;
-p)  checkopts $OPTNAME b e o t v w x
+p)  checkopts $OPTNAME b e o t w x
     passthrough=1 ;;
-t)  checkopts $OPTNAME b e o p v w x
+t)  checkopts $OPTNAME b e o p w x
     transparent=2 ;;
-v)  checkopts $OPTNAME b e o p t w
+v)  checkopts $OPTNAME b w
     verbose=1 ;;
 w)  checkopts $OPTNAME b c e o p t v x
     which=1 ;;
@@ -267,6 +268,17 @@ shebang() # {{{
 {
   printf "#!%s\n" "/bin/sh"
 } # }}}
+maybe_verbose() # {{{
+{
+  test ${1:?} -ne 0 || return 0
+  sed 's/^ *//' <<\EOF
+  {
+    printf "%s" "${ARGV0##*/}"
+    test $# -eq 0 || printf " %s" "$*"
+    printf "\n"
+  } >&2
+EOF
+} # }}}
 
 impl_has_body() # {{{
 {
@@ -276,6 +288,7 @@ impl_passthrough() # {{{
 {
   {
     shebang
+    maybe_verbose ${2:?}
     sed 's/^ *//' <<\EOF
     exec "$ARGV0" "$@"
 EOF
@@ -285,6 +298,7 @@ impl_transparent() # {{{
 {
   {
     shebang
+    maybe_verbose ${2:?}
     sed 's/^ *//' <<\EOF
     argv0=$(command -v "$ARGV0")
     export PATH="$FAKE_BINDIR${PATH+:$PATH}"
@@ -296,27 +310,17 @@ impl_has_errout() # {{{
 {
   {
     shebang
+    maybe_verbose ${3:?}
     printf -- "%s\n" "cat >&${2:?} <<\\EOF"
     cat
     printf -- "%s\n" "EOF"
-  } > "${1:?}"
-} # }}}
-impl_verbose() # {{{
-{
-  {
-    shebang
-    sed 's/^ *//' <<\EOF
-    exec >&2
-    printf "%s" "${ARGV0##*/}"
-    test $# -eq 0 || printf " %s" "$*"
-    printf "\n"
-EOF
   } > "${1:?}"
 } # }}}
 impl_default() # {{{
 {
   {
     shebang
+    maybe_verbose ${2:?}
   } > "${1:?}"
 } # }}}
 
@@ -325,17 +329,15 @@ mkdir -p "${name%/*}"
 if test $copy_body = asis; then
   impl_has_body "$name"
 elif test $copy_body = stderr; then
-  impl_has_errout "$name" 2
+  impl_has_errout "$name" 2 $verbose
 elif test $copy_body = stdout; then
-  impl_has_errout "$name" 1
-elif test $verbose -ne 0; then
-  impl_verbose "$name"
+  impl_has_errout "$name" 1 $verbose
 elif test $passthrough -ne 0; then
-  impl_passthrough "$name"
+  impl_passthrough "$name" $verbose
 elif test $transparent -ne 0; then
-  impl_transparent "$name"
+  impl_transparent "$name" $verbose
 else
-  impl_default "$name"
+  impl_default "$name" $verbose
 fi
 test -z "$exitcode" || printf -- >> "$name" "exit %s\n" "$exitcode"
 chmod +x "$name"
