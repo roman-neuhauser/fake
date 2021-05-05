@@ -284,7 +284,15 @@ EOF
 
 impl_has_body() # {{{
 {
-  cat > "${1:?}"
+  {
+    shebang
+    sed 's/^ *//' <<\EOF
+    exec "${0%/impl}/body" "$@"
+EOF
+  } > "${1:?}"
+  local body="${1%/impl}/body"
+  cat > "$body"
+  chmod +x "$body"
 } # }}}
 impl_passthrough() # {{{
 {
