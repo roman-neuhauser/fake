@@ -296,10 +296,10 @@ impl_has_errout() # {{{
 {
   {
     shebang
-    printf -- "%s\n" "cat >&${1:?} <<\\EOF"
+    printf -- "%s\n" "cat >&${2:?} <<\\EOF"
     cat
     printf -- "%s\n" "EOF"
-  } > "$name"
+  } > "${1:?}"
 } # }}}
 impl_verbose() # {{{
 {
@@ -325,9 +325,9 @@ mkdir -p "${name%/*}"
 if test $copy_body = asis; then
   impl_has_body "$name"
 elif test $copy_body = stderr; then
-  impl_has_errout 2 "$name"
+  impl_has_errout "$name" 2
 elif test $copy_body = stdout; then
-  impl_has_errout 1 "$name"
+  impl_has_errout "$name" 1
 elif test $verbose -ne 0; then
   impl_verbose "$name"
 elif test $passthrough -ne 0; then
