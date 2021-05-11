@@ -24,6 +24,7 @@
 .Nm
 . Fl b
 . Op Fl c
+. Op Fl v
 . Ar CMD
 . Op Ar ARG Ns ...
 .Nm

@@ -215,7 +215,7 @@ while getopts hbceoptvwx: OPTNAME; do
 case "$OPTNAME" in
 h) usage=$((usage - 1)) ;;
 
-b)  checkopts $OPTNAME e o p v w
+b)  checkopts $OPTNAME e o p w
     copy_body=asis ;;
 c)  checkopts $OPTNAME w
     catchall=1 ;;
@@ -227,7 +227,7 @@ p)  checkopts $OPTNAME b e o t w x
     passthrough=1 ;;
 t)  checkopts $OPTNAME e o p w x
     transparent=2 ;;
-v)  checkopts $OPTNAME b w
+v)  checkopts $OPTNAME w
     verbose=1 ;;
 w)  checkopts $OPTNAME b c e o p t v x
     which=1 ;;
@@ -286,6 +286,7 @@ impl_has_body() # {{{
 {
   {
     shebang
+    maybe_verbose ${2:?}
     test $transparent -eq 0 ||
       printf -- '%s\n' 'export PATH="$FAKE_BINDIR${PATH+:$PATH}"'
     printf -- '%s\n' 'exec "${0%/impl}/body" "$@"'
@@ -337,7 +338,7 @@ impl_default() # {{{
 mkdir -p "${name%/*}"
 
 if test $copy_body = asis; then
-  impl_has_body "$name"
+  impl_has_body "$name" $verbose
 elif test $copy_body = stderr; then
   impl_has_errout "$name" 2 $verbose
 elif test $copy_body = stdout; then
