@@ -182,7 +182,7 @@ mismatch() # {{{
 detail() # {{{
 {
   local mode=$1; shift
-  printf -- "fake: %s: %s" "$mode" "$ARGV0"
+  printf -- "fake: %s: %s" "$mode" "${ARGV0##*/}"
   test $# -eq 0 || printf -- " %s" "$@"
   printf -- "\n"
 } # }}}
@@ -301,7 +301,7 @@ impl_passthrough() # {{{
     shebang
     maybe_verbose ${2:?}
     sed 's/^ *//' <<\EOF
-    exec "$ARGV0" "$@"
+    exec "${ARGV0##*/}" "$@"
 EOF
   } > "${1:?}"
 } # }}}
@@ -311,7 +311,7 @@ impl_transparent() # {{{
     shebang
     maybe_verbose ${2:?}
     sed 's/^ *//' <<\EOF
-    argv0=$(command -v "$ARGV0")
+    argv0=$(command -v "${ARGV0##*/}")
     export PATH="$FAKE_BINDIR${PATH+:$PATH}"
     exec "$argv0" "$@"
 EOF
@@ -381,7 +381,7 @@ hashargs hargv "$@"
 hargv="$(printf "%s" "$hargv" | sed 's:.\{'"$chunksize"'\}:&/:g')"
 hargv="${hargv%/}"
 
-export ARGV0="${0##*/}"
+export ARGV0="$0"
 
 impl=
 if findimpl impl "$impldir" "$#" "$hargv"; then
