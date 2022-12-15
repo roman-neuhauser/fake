@@ -47,9 +47,8 @@ test::
 
   $ cat $(fake -w fubar lol)
   #!/bin/sh
-  argv0=$(command -v "${ARGV0##*/}")
-  export PATH="$FAKE_BINDIR${PATH+:$PATH}"
-  exec "$argv0" "$@"
+  env PATH="$FAKE_BINDIR${PATH+:$PATH}" \
+  exec "$(command -v "${ARGV0##*/}")" "$@"
 
   $ fake -vt fubar lollol
 
@@ -63,6 +62,5 @@ test::
   test $# -eq 0 || printf " %s" "$*"
   printf "\n"
   } >&2
-  argv0=$(command -v "${ARGV0##*/}")
-  export PATH="$FAKE_BINDIR${PATH+:$PATH}"
-  exec "$argv0" "$@"
+  env PATH="$FAKE_BINDIR${PATH+:$PATH}" \
+  exec "$(command -v "${ARGV0##*/}")" "$@"

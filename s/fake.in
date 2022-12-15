@@ -226,7 +226,7 @@ o)  checkopts $OPTNAME b e p t w
 p)  checkopts $OPTNAME b e o t w x
     passthrough=1 ;;
 t)  checkopts $OPTNAME e o p w x
-    transparent=2 ;;
+    transparent=1 ;;
 v)  checkopts $OPTNAME w
     verbose=1 ;;
 w)  checkopts $OPTNAME b c e o p t v x
@@ -281,14 +281,18 @@ maybe_verbose() # {{{
   } >&2
 EOF
 } # }}}
+maybe_transparent() # {{{
+{
+  test $transparent -eq 0 ||
+    printf -- '%s\n' 'env PATH="$FAKE_BINDIR${PATH+:$PATH}" \'
+} # }}}
 
 impl_has_body() # {{{
 {
   {
     shebang
     maybe_verbose ${2:?}
-    test $transparent -eq 0 ||
-      printf -- '%s\n' 'export PATH="$FAKE_BINDIR${PATH+:$PATH}"'
+    maybe_transparent
     printf -- '%s\n' 'exec "${0%/impl}/body" "$@"'
   } > "${1:?}"
   local body="${1%/impl}/body"
@@ -310,11 +314,8 @@ impl_transparent() # {{{
   {
     shebang
     maybe_verbose ${2:?}
-    sed 's/^ *//' <<\EOF
-    argv0=$(command -v "${ARGV0##*/}")
-    export PATH="$FAKE_BINDIR${PATH+:$PATH}"
-    exec "$argv0" "$@"
-EOF
+    maybe_transparent
+    printf -- '%s\n' 'exec "$(command -v "${ARGV0##*/}")" "$@"'
   } > "${1:?}"
 } # }}}
 impl_has_errout() # {{{
