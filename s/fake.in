@@ -201,7 +201,7 @@ hashargs() # {{{
 #### SHARED }}}
 
 catchall=0
-copy_body=nope
+has_body=0
 passthrough=0
 transparent=0
 has_output=0
@@ -216,13 +216,13 @@ case "$OPTNAME" in
 h) usage=$((usage - 1)) ;;
 
 b)  checkopts $OPTNAME e o p w
-    copy_body=asis ;;
+    has_body=1 ;;
 c)  checkopts $OPTNAME w
     catchall=1 ;;
 e)  checkopts $OPTNAME b o p t w
-    copy_body=stderr ;;
+    has_output=2 ;;
 o)  checkopts $OPTNAME b e p t w
-    copy_body=stdout ;;
+    has_output=1 ;;
 p)  checkopts $OPTNAME b e o t w x
     passthrough=1 ;;
 t)  checkopts $OPTNAME e o p w x
@@ -337,12 +337,10 @@ impl_default() # {{{
 
 mkdir -p "${name%/*}"
 
-if test $copy_body = asis; then
+if test $has_body -gt 0; then
   impl_has_body "$name" $verbose
-elif test $copy_body = stderr; then
-  impl_has_errout "$name" 2 $verbose
-elif test $copy_body = stdout; then
-  impl_has_errout "$name" 1 $verbose
+elif test $has_output -gt 0; then
+  impl_has_errout "$name" $has_output $verbose
 elif test $passthrough -ne 0; then
   impl_passthrough "$name" $verbose
 elif test $transparent -ne 0; then
