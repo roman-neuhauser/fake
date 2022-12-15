@@ -293,7 +293,7 @@ impl_has_body() # {{{
     shebang
     maybe_verbose ${2:?}
     maybe_transparent
-    printf -- '%s\n' 'exec "${0%/impl}/body" "$@"'
+    printf -- 'exec "%s" "$@"\n' '${0%/impl}/body'
   } > "${1:?}"
   local body="${1%/impl}/body"
   cat > "$body"
@@ -304,9 +304,7 @@ impl_passthrough() # {{{
   {
     shebang
     maybe_verbose ${2:?}
-    sed 's/^ *//' <<\EOF
-    exec "${ARGV0##*/}" "$@"
-EOF
+    printf -- 'exec "%s" "$@"\n' '${ARGV0##*/}'
   } > "${1:?}"
 } # }}}
 impl_transparent() # {{{
@@ -315,7 +313,7 @@ impl_transparent() # {{{
     shebang
     maybe_verbose ${2:?}
     maybe_transparent
-    printf -- '%s\n' 'exec "$(command -v "${ARGV0##*/}")" "$@"'
+    printf -- 'exec "%s" "$@"\n' '$(command -v "${ARGV0##*/}")'
   } > "${1:?}"
 } # }}}
 impl_has_errout() # {{{
